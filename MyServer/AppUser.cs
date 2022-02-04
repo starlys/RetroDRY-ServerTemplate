@@ -1,8 +1,5 @@
-﻿using RetroDRY;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System;
+using RetroDRY;
 
 namespace MyServer
 {
@@ -11,11 +8,11 @@ namespace MyServer
     public class AppUser : IUser
     {
         //TODO:remove these static members; they grant permission to everything
-        public static RetroRole GenericRole = new RetroRole
+        public static RetroRole GenericRole { get; } = new()
         {
             BaseLevel = PermissionLevel.All
         };
-        public static AppUser GenericUser = new AppUser();
+        public static AppUser GenericUser { get; } = new();
             
         public string Id => "x";
 

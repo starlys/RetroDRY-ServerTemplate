@@ -1,5 +1,6 @@
 using System;
 using System.Data.Common;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -54,11 +55,11 @@ namespace MyServer
             //TODO:Modify this resolver to return an open DbConnection to your database. If you are using PostgreSQL, then you probably
             //only need to change the connection string. If you are using a different database vendor, then you should remove the "npgsql" nuget
             //package and add the package for your driver.
-            static DbConnection dbResolver(int databaseNumber)
+            static Task<DbConnection> dbResolver(int databaseNumber)
             {
                 var db = new Npgsql.NpgsqlConnection("host=localhost;database=retrodrydemo;username=postgres;password=mypasswordgoeshere");
                 db.Open();
-                return db;
+                return Task.FromResult(db as DbConnection);
             }
 
             //build data dictionary from annotations
@@ -71,7 +72,8 @@ namespace MyServer
             //start up RetroDRY
             ddict.FinalizeInheritance();
             Globals.Retroverse?.Dispose();
-            Globals.Retroverse = new Retroverse(SqlFlavorizer.VendorKind.PostgreSQL, ddict, dbResolver);
+            Globals.Retroverse = new Retroverse();
+            Globals.Retroverse.Initialize(SqlFlavorizer.VendorKind.PostgreSQL, ddict, dbResolver);
 
             //TODO:Here is the best place to add things like custom exception text rewriting and error logging
         }
