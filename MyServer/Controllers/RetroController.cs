@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Net.Http.Headers;
 using RetroDRY;
 
 namespace MyServer.Controllers
@@ -21,5 +22,13 @@ namespace MyServer.Controllers
             return Globals.Retroverse.HandleHttpLong(req);
         }
 
+        [HttpGet("export")]
+        public async Task Export(string key)
+        {
+            Response.Headers.Add(HeaderNames.ContentType, "text/plain");
+            Response.Headers.Add(HeaderNames.ContentDisposition, "attachment; filename=data.csv");
+
+            await Globals.Retroverse.HandleHttpExport(Response.Body, key);
+        }
     }
 }
