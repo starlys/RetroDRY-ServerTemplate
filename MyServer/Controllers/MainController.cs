@@ -12,6 +12,7 @@ namespace MyServer.Controllers
         [HttpGet("newsession")]
         public object GetSession()
         {
+            if (Globals.Retroverse == null) throw new Exception("Uninitialized");
             var retroverse = Globals.Retroverse;
             string sessionKey = retroverse.CreateSession(AppUser.GenericUser);
             return new

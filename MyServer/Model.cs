@@ -15,7 +15,7 @@ namespace MyServer
     [Prompt("Phone types")]
     public class PhoneTypeLookup : Persiston
     {
-        public List<PhoneTypeRow> PhoneType;
+        public List<PhoneTypeRow> PhoneType = new();
 
         [Prompt("Type")]
         public class PhoneTypeRow : Row
@@ -26,7 +26,7 @@ namespace MyServer
 
             [StringLength(20), MainColumn, SortColumn]
             [Prompt("Phone type")]
-            public string TypeOfPhone;
+            public string? TypeOfPhone;
         }
     }
 
@@ -36,7 +36,7 @@ namespace MyServer
     [Prompt("Sale statuses")]
     public class SaleStatusLookup : Persiston
     {
-        public List<SaleStatusRow> SaleStatus;
+        public List<SaleStatusRow> SaleStatus = new();
 
         [Prompt("Status")]
         public class SaleStatusRow : Row
@@ -47,10 +47,10 @@ namespace MyServer
 
             [StringLength(20, MinimumLength = 1), MainColumn, SortColumn]
             [Prompt("Sale status")]
-            public string Name;
+            public string? Name;
 
             [StringLength(20), WireType(Constants.TYPE_NSTRING)]
-            public string Note;
+            public string? Note;
         }
     }
 
@@ -65,10 +65,10 @@ namespace MyServer
         public int? EmployeeId;
 
         [StringLength(50, MinimumLength = 1), Prompt("First name")]
-        public string FirstName;
+        public string? FirstName;
 
         [StringLength(50, MinimumLength = 1), Prompt("Last name"), MainColumn]
-        public string LastName;
+        public string? LastName;
 
         [ForeignKey(typeof(Employee))]
         [Prompt("Supervisor ID")]
@@ -76,14 +76,14 @@ namespace MyServer
         public int? SupervisorId;
 
         [LeftJoin("SupervisorId", "LastName"), Prompt("Supervisor")]
-        public string SupervisorLastName;
+        public string? SupervisorLastName;
 
         [Prompt("Hired on")]
         public DateTime HireDate;
 
         public bool IsToxic;
 
-        public List<EContactRow> EContact;
+        public List<EContactRow> EContact = new();
 
         [SqlTableName("EmployeeContact"), ParentKey("EmployeeId")]
         [Prompt("Employee contact")]
@@ -97,7 +97,7 @@ namespace MyServer
             public short PhoneType;
 
             [StringLength(50), Prompt("Phone number")]
-            public string Phone;
+            public string? Phone;
         }
     }
 
@@ -112,7 +112,7 @@ namespace MyServer
         public int? CustomerId;
 
         [StringLength(200, MinimumLength = 1)]
-        public string Company;
+        public string? Company;
 
         [ForeignKey(typeof(Employee))]
         [SelectBehavior(typeof(EmployeeList))]
@@ -120,10 +120,10 @@ namespace MyServer
         public int SalesRepId;
 
         [LeftJoin("SalesRepId", "LastName"), Prompt("Sales rep")]
-        public string SalesRepLastName;
+        public string? SalesRepLastName;
 
         [StringLength(4000), WireType(Constants.TYPE_NSTRING)]
-        public string Notes;
+        public string? Notes;
     }
 
     /// <summary>
@@ -137,16 +137,16 @@ namespace MyServer
         public int? ItemId;
 
         [Prompt("I-code"), RegularExpression("^[A-Z]{2}-[0-9]{4}$"), MainColumn]
-        public string ItemCode;
+        public string? ItemCode;
 
         [StringLength(200, MinimumLength = 3)]
-        public string Description;
+        public string? Description;
 
         public double? Weight;
 
         public decimal? Price;
 
-        public List<ItemVariantRow> ItemVariant;
+        public List<ItemVariantRow> ItemVariant = new();
 
         [ParentKey("ItemId")]
         [Prompt("Variant")]
@@ -157,10 +157,10 @@ namespace MyServer
             public int? ItemVariantId;
 
             [StringLength(20, MinimumLength = 1), Prompt("Sub-code"), MainColumn, SortColumn]
-            public string VariantCode;
+            public string? VariantCode;
 
             [StringLength(200, MinimumLength = 3)]
-            public string Description;
+            public string? Description;
         }
     }
 
@@ -188,7 +188,7 @@ namespace MyServer
         [ForeignKey(typeof(SaleStatusLookup)), Prompt("Status")]
         public short Status;
 
-        public List<SaleItemRow> SaleItem;
+        public List<SaleItemRow> SaleItem = new();
 
         [ParentKey("SaleId")]
         [Prompt("Item sold")]
@@ -204,7 +204,7 @@ namespace MyServer
             public int ItemId;
 
             [LeftJoin("ItemId", "Description")]
-            public string ItemDescription;
+            public string? ItemDescription;
 
             [Range(1, 999)]
             public int Quantity;
@@ -216,7 +216,7 @@ namespace MyServer
             [Prompt("Ext Price")]
             public decimal ExtendedPrice;
 
-            public List<SaleItemNoteRow> SaleItemNote;
+            public List<SaleItemNoteRow> SaleItemNote = new();
 
             [ParentKey("SaleItemId")]
             [Prompt("Sale note")]
@@ -227,7 +227,7 @@ namespace MyServer
                 public int? SaleItemNoteId;
 
                 [StringLength(4000), WireType(Constants.TYPE_NSTRING)]
-                public string Note;
+                public string? Note;
             }
         }
     }
@@ -237,7 +237,7 @@ namespace MyServer
     /// </summary>
     public class EmployeeList : Viewon
     {
-        public List<TopRow> Employee;
+        public List<TopRow> Employee = new();
 
         [InheritFrom("Employee")]
         public class TopRow : Row
@@ -246,16 +246,16 @@ namespace MyServer
             public int EmployeeId;
 
             [SortColumn(false)]
-            public string FirstName;
+            public string? FirstName;
 
             [SortColumn(true)]
-            public string LastName;
+            public string? LastName;
 
             [ForeignKey(typeof(Employee))]
             public int SupervisorId;
 
             [LeftJoin("SupervisorId", "LastName"), Prompt("Supervisor")]
-            public string SupervisorLastName;
+            public string? SupervisorLastName;
 
             public bool IsToxic;
         }
@@ -264,7 +264,7 @@ namespace MyServer
         public abstract class Criteria
         {
             [Prompt("Last name starts with")]
-            public string LastName;
+            public string? LastName;
 
             [Prompt("Toxic human?")]
             public bool IsToxic;
@@ -277,7 +277,7 @@ namespace MyServer
     public class CustomerList : Viewon
     {
         [Prompt("Customer List")]
-        public List<TopRow> Customer;
+        public List<TopRow> Customer = new();
 
         [InheritFrom("Customer")]
         public class TopRow : Row
@@ -286,26 +286,26 @@ namespace MyServer
             public int CustomerId;
 
             [SortColumn(true)]
-            public string Company;
+            public string? Company;
 
             [ForeignKey(typeof(Employee))]
             public int SalesRepId;
 
             [LeftJoin("SalesRepId", "LastName"), Prompt("Sales rep.")]
-            public string SalesRepLastName;
+            public string? SalesRepLastName;
         }
 
         [Criteria]
         public abstract class Criteria
         {
             [Prompt("Company starts with")]
-            public string Company;
+            public string? Company;
 
             [InheritFrom("Customer.SalesRepId")]
             public int SalesRepId;
 
             [InheritFrom("Customer.SalesRepLastName")]
-            public string SalesRepLastName;
+            public string? SalesRepLastName;
         }
     }
 
@@ -314,7 +314,7 @@ namespace MyServer
     /// </summary>
     public class ItemList : Viewon
     {
-        public List<TopRow> Item;
+        public List<TopRow> Item = new();
 
         [InheritFrom("Item")]
         public class TopRow : Row
@@ -323,10 +323,10 @@ namespace MyServer
             public int ItemId;
 
             [SortColumn(true)]
-            public string ItemCode;
+            public string? ItemCode;
 
             [SortColumn(false)]
-            public string Description;
+            public string? Description;
 
             public double? Weight;
 
@@ -337,10 +337,10 @@ namespace MyServer
         public abstract class Criteria
         {
             [Prompt("I-code starts with")]
-            public string ItemCode;
+            public string? ItemCode;
 
             [Prompt("Item description")]
-            public string Description;
+            public string? Description;
 
             public double? Weight;
         }
@@ -351,7 +351,7 @@ namespace MyServer
     /// </summary>
     public class ItemVariantList : Viewon
     {
-        public List<TopRow> ItemVariant;
+        public List<TopRow> ItemVariant = new();
 
         public class TopRow : Row
         {
@@ -361,10 +361,10 @@ namespace MyServer
             public int ItemId;
 
             [MainColumn, SortColumn(true)]
-            public string VariantCode;
+            public string? VariantCode;
 
             [VisibleInDropdown]
-            public string Description;
+            public string? Description;
         }
 
         [Criteria]
@@ -379,7 +379,7 @@ namespace MyServer
     /// </summary>
     public class SaleList : Viewon
     {
-        public List<TopRow> Sale;
+        public List<TopRow> Sale = new();
 
         [InheritFrom("Sale", IncludeCustom = true)]
         public class TopRow : Row

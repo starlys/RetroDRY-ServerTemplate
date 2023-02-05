@@ -6,6 +6,6 @@ namespace MyServer
 {
     public static class Globals
     {
-        public static Retroverse Retroverse { get; set; }
+        public static Retroverse? Retroverse { get; set; }
     }
 }

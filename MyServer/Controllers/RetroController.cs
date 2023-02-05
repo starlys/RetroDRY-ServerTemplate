@@ -13,18 +13,21 @@ namespace MyServer.Controllers
         [HttpPost("main")]
         public Task<MainResponse> Main([FromBody]MainRequest req)
         {
+            if (Globals.Retroverse == null) throw new Exception("Uninitialized");
             return Globals.Retroverse.HandleHttpMain(req);
         }
 
         [HttpPost("long")]
         public Task<LongResponse> Long(LongRequest req)
         {
+            if (Globals.Retroverse == null) throw new Exception("Uninitialized");
             return Globals.Retroverse.HandleHttpLong(req);
         }
 
         [HttpGet("export")]
         public async Task Export(string key)
         {
+            if (Globals.Retroverse == null) throw new Exception("Uninitialized");
             Response.Headers.Add(HeaderNames.ContentType, "text/plain");
             Response.Headers.Add(HeaderNames.ContentDisposition, "attachment; filename=data.csv");
 
